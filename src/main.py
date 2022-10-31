@@ -7,7 +7,7 @@ class Pins:
         self.RED = Pin(26, Pin.OUT)
         self.YELLOW = Pin(27, Pin.OUT)
         self.GREEN = Pin(28, Pin.OUT)
-        self.BUTTON = Pin(22, Pin.IN)
+        self.BUTTON = Pin(15, Pin.IN)
 
         self.last_time = 0
 
@@ -19,6 +19,8 @@ class Pins:
 
         self.last_time = utime.ticks_ms()
         while utime.ticks_diff(utime.ticks_ms(), self.last_time) < delay:
+
+            utime.sleep(0.04)
 
             button_value = self.BUTTON.value()
             print(f'button_value: {button_value}')
@@ -33,6 +35,8 @@ class Pins:
 
                     self.last_time = utime.ticks_ms()
                     while utime.ticks_diff(utime.ticks_ms(), self.last_time) < 1000:
+
+                        utime.sleep(0.04)
 
                         button_value = self.BUTTON.value()
                         print(f'button_value (sub): {button_value}')
