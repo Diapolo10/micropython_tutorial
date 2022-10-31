@@ -4,8 +4,8 @@ from machine import Pin
 
 class Pins:
     def __init__(self):
-        self.RED = Pin(30, Pin.OUT)
-        self.YELLOW = Pin(29, Pin.OUT)
+        self.RED = Pin(26, Pin.OUT)
+        self.YELLOW = Pin(27, Pin.OUT)
         self.GREEN = Pin(28, Pin.OUT)
         
         self.RED.low()
