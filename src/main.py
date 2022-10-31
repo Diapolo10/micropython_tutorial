@@ -7,45 +7,77 @@ class Pins:
         self.RED = Pin(26, Pin.OUT)
         self.YELLOW = Pin(27, Pin.OUT)
         self.GREEN = Pin(28, Pin.OUT)
-        
+        self.BUTTON = Pin(22, Pin.IN)
+
+        self.last_time = 0
+
         self.RED.low()
         self.YELLOW.low()
         self.GREEN.high()
 
-    def green_to_red(self):
-        if self.RED.value() == 1:
-            return
-        
-        self.GREEN.high()
-        # utime.sleep(5)
+    def read_button_while_waiting_delay_to_end(self, delay):
+
+        self.last_time = utime.ticks_ms()
+        while utime.ticks_diff(utime.ticks_ms(), self.last_time) < delay:
+
+            button_value = self.BUTTON.value()
+            print(f'button_value: {button_value}')
+            if button_value == 1:
+                self.RED.low()
+                self.YELLOW.low()
+                self.GREEN.low()
+
+                utime.sleep(1)
+
+                while True:
+
+                    self.last_time = utime.ticks_ms()
+                    while utime.ticks_diff(utime.ticks_ms(), self.last_time) < 1000:
+
+                        button_value = self.BUTTON.value()
+                        print(f'button_value (sub): {button_value}')
+                        if button_value == 1:
+                            utime.sleep(1)
+                            return
+
+                    if self.YELLOW.value() == 0:
+                        self.YELLOW.high()
+
+                    else:
+                        self.YELLOW.low()
+
+    def run_lights_cycle(self):
         self.GREEN.low()
         self.YELLOW.high()
-        utime.sleep(1)
+
+        self.read_button_while_waiting_delay_to_end(1000)
 
         self.YELLOW.low()
         self.RED.high()
-        utime.sleep(5)
 
-    def red_to_green(self):
-        if self.GREEN.value() == 1:
-            return
+        print("Toggled to red")
+
+        self.read_button_while_waiting_delay_to_end(5000)
 
         self.YELLOW.high()
-        utime.sleep(1)
+
+        self.read_button_while_waiting_delay_to_end(1000)
 
         self.RED.low()
         self.YELLOW.low()
         self.GREEN.high()
-        utime.sleep(5)
 
-    
+        print("Toggled to green")
+
+        self.read_button_while_waiting_delay_to_end(5000)
+
+        self.RED.low()
+        self.YELLOW.low()
+        self.GREEN.low()
+
 
 pins = Pins()
 
 
-
 while True:
-    pins.green_to_red()
-    print("Toggled to red")
-    pins.red_to_green()
-    print("Toggled to green")
+    pins.run_lights_cycle()
