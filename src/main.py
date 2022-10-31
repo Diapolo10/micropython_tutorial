@@ -36,6 +36,15 @@ class TrafficLight:
         self.YELLOW.low()
         self.GREEN.high()
 
+    def blinking_yellow(self):
+        self.RED.low()
+        self.YELLOW.low()
+        self.GREEN.low()
+
+        utime.sleep(1)
+
+        self.YELLOW.high()
+
 
 def button_reader_thread(traffic_light):
     while True:
@@ -50,12 +59,12 @@ _thread.start_new_thread(button_reader_thread, (traffic_light,))
 
 while True:
     if traffic_light.button_pressed:
-        traffic_light.RED.high()
-        utime.sleep(4)
+        traffic_light.blinking_yellow()
+        utime.sleep(1)
         traffic_light.button_pressed = False
-    traffic_light.RED.high()
-    utime.sleep(5)
-    traffic_light.red_to_green()
-    utime.sleep(5)
-    traffic_light.green_to_red()
-    utime.sleep(5)
+    else:
+        traffic_light.RED.high()
+        utime.sleep(5)
+        traffic_light.red_to_green()
+        utime.sleep(5)
+        traffic_light.green_to_red()
