@@ -45,7 +45,7 @@ def button_reader_thread(traffic_light):
 
 traffic_light = TrafficLight()
 
-_thread.start_new_thread(button_reader_thread, (traffic_light))
+_thread.start_new_thread(button_reader_thread, (traffic_light,))
 
 
 while True:
