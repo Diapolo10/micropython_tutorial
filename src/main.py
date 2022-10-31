@@ -1,15 +1,16 @@
 import utime
-from machine import ADC, Pin
+from machine import Pin
+
+import DFRobot_ADS1115
 
 # ADC: https://pico-adc.markomo.me/
 
 # https://how2electronics.com/how-to-use-adc-in-raspberry-pi-pico-adc-example-code/
 
-# adc_pin = Pin(28 Pin.IN)  # ADC2
-analog_value = ADC(28)
+sda_pin = Pin(26, Pin.IN)
+clock_pin = Pin(27, Pin.OUT)
 
 while True:
     reading = analog_value.read_u16()
-    print(' ' * 16, end='\r')
-    print(f"ADC: {reading}", end='\r')
+    print(f"{' ' * 16 + '\r'}ADC: {reading}", end='\r')
     utime.sleep(0.2)
