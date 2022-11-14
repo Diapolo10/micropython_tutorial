@@ -1,8 +1,3 @@
-from machine import I2C, Pin, Timer
-from time import sleep_ms, ticks_ms, ticks_us
-from array import array
-
-# import DFRobot_ADS1115
 # The MIT License (MIT)
 #
 # Copyright (c) 2016 Radomir Dopieralski (@deshipu),
@@ -255,54 +250,3 @@ class ADS1015(ADS1115):
 
     def alert_read(self):
         return super().alert_read() >> 4
-
-
-
-# ADC: https://pico-adc.markomo.me/
-
-# https://how2electronics.com/how-to-use-adc-in-raspberry-pi-pico-adc-example-code/
-
-addr = 72
-gain = 1
-_BUFFERSIZE = const(512)
-ADC_RATE = 5
-
-data = array("h", (0 for _ in range(_BUFFERSIZE)))
-timestamp = array("L", (0 for _ in range(_BUFFERSIZE)))
-irq_busy = False
-index_put = 0
-
-sda_pin = Pin(26, Pin.IN)
-clock_pin = Pin(27, Pin.OUT)
-i2c = I2C(scl=clock_pin, sda=sda_pin, freq=400_000)
-ads = ads1x15.ADS1115(i2c, addr, gain)
-
-
-def sample(x, adc=ads.read_rev, data=data, timestamp=timestamp):
-    global index_put, irq_busy
-    if irq_busy:
-        return
-    irq_busy = True
-    if index_put < _BUFFERSIZE:
-        timestamp[index_put] = ticks_us()
-        data[index_put] = adc()
-        index_put += 1
-    irq_busy = False
-
-
-# ads.set_conv(7, 0)
-# ads.read_rev()
-# sleep_ms(ADC_RATE)
-# tim = Timer(-1)
-# tim.init(period=ADC_RATE, mode=Timer.PERIODIC, callback=sample)
-
-while index_put < _BUFFERSIZE:
-    ads.set_conv(7, 0)
-    reading = ads.raw_to_v(ads.read_rev())
-    sleep_ms(ADC_RATE)
-    tim = Timer(-1)
-    tim.init(period=ADC_RATE, mode=Timer.PERIODIC, callback=sample)
-    print(' ' * 16, end='\r')
-    print(f"ADC: {reading}", end='\r')
-
-tim.deinit()
