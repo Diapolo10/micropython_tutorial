@@ -1,6 +1,8 @@
-from machine import I2C, Pin, SoftI2C
-from time import sleep
+import utime
+from machine import ADC, I2C, Pin, SoftI2C
 from grove_lcd_i2c import Grove_LCD_I2C
+
+analog_value = ADC(28)
 
 i2c = I2C(0, sda=Pin(0), scl=Pin(1), freq=400_000)
 # i2c = SoftI2C(sda=Pin(0), scl=Pin(1), freq=400_000)
@@ -12,11 +14,7 @@ lcd = Grove_LCD_I2C(i2c, I2C_ADDR)
 lcd.home()
 
 while True:
-    print(I2C_ADDR)
-    lcd.write(f"I2C Address: {I2C_ADDR}\nShadow Garden")
-    sleep(2)
-    lcd.clear()
-    lcd.home()
-    lcd.write(f"I2C Address: {I2C_ADDR:x}\nShadow Garden")
-    sleep(2)
+    reading = analog_value.read_u16()
+    lcd.write(f"I2C Address: {I2C_ADDR}\nADC: {reading:.010f}V")
+    utime.sleep(2000)
     lcd.clear()
