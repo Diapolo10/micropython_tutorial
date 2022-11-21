@@ -15,6 +15,6 @@ lcd.home()
 
 while True:
     reading = analog_value.read_u16()
-    lcd.write(f"I2C Address: {I2C_ADDR}\nADC: {reading:.010f}V")
-    utime.sleep(2000)
+    lcd.write(f"I2C Address: {I2C_ADDR}\nADC: {reading:.03f}V")
+    utime.sleep(1)
     lcd.clear()
